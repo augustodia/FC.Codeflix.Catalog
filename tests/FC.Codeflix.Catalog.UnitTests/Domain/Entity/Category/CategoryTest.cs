@@ -159,12 +159,12 @@ public class CategoryTest
     {
         var category = _categoryTestFixture.GetValidCategory();
 
-        var newValues = new { Name = "New Name", Description = "New Description" };
+        var categoryWithNewValues = _categoryTestFixture.GetValidCategory();
 
-        category.Update(newValues.Name, newValues.Description);
+        category.Update(categoryWithNewValues.Name, categoryWithNewValues.Description);
 
-        category.Name.Should().Be(newValues.Name);
-        category.Description.Should().Be(newValues.Description);
+        category.Name.Should().Be(categoryWithNewValues.Name);
+        category.Description.Should().Be(categoryWithNewValues.Description);
     }
 
     [Fact(DisplayName = nameof(UpdateOnlyName))]
@@ -173,12 +173,12 @@ public class CategoryTest
     {
         var category = _categoryTestFixture.GetValidCategory();
 
-        var newValues = new { Name = "New Name" };
+        var newName = _categoryTestFixture.GetValidCategoryName();
         var currentDescription = category.Description;
 
-        category.Update(newValues.Name);
+        category.Update(newName);
 
-        category.Name.Should().Be(newValues.Name);
+        category.Name.Should().Be(newName);
         category.Description.Should().Be(currentDescription);
     }
 
@@ -216,7 +216,7 @@ public class CategoryTest
     [Trait("Domain", "Category - Aggregates")]
     public void UpdateErrorWhenNameIsGreaterThan255Characters()
     {
-        var invalidName = String.Join(null, Enumerable.Range(1, 256).Select(_ => "a").ToArray());
+        var invalidName = _categoryTestFixture.Faker.Lorem.Letter(256);
 
         var category = _categoryTestFixture.GetValidCategory();
 
@@ -230,11 +230,12 @@ public class CategoryTest
     [Trait("Domain", "Category - Aggregates")]
     public void UpdateErrorWhenDescriptionIsGreaterThan10_000Characters()
     {
-        var invalidDescription = String.Join(null, Enumerable.Range(1, 10001).Select(_ => "a").ToArray());
+        var invalidDescription = _categoryTestFixture.Faker.Lorem.Letter(10_001);
+        var validName = _categoryTestFixture.GetValidCategoryName();
 
         var category = _categoryTestFixture.GetValidCategory();
 
-        Action action = () => category.Update("Category new Name", invalidDescription);
+        Action action = () => category.Update(validName, invalidDescription);
 
         action.Should().Throw<EntityValidationException>().WithMessage("Description should be less or equal 10.000 characters long");
     }
