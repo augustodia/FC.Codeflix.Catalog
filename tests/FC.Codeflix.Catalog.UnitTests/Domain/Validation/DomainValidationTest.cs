@@ -3,6 +3,7 @@ using Xunit;
 using FC.Codeflix.Catalog.Domain.Validation;
 using FluentAssertions;
 using FC.Codeflix.Catalog.Domain.Exceptions;
+using Xunit.Sdk;
 
 namespace FC.Codeflix.Catalog.UnitTests.Domain.Validation;
 public class DomainValidationTest
@@ -24,10 +25,34 @@ public class DomainValidationTest
     [Trait("Domain", "DomainValidation - Validation")]
     public void NotNullThrowWhenNull()
     {
-        string value = null;
+        string? value = null;
 
         Action action = () => DomainValidation.NotNull(value, "FieldName");
 
         action.Should().Throw<EntityValidationException>().WithMessage("FieldName should not be null");
+    }
+
+
+    [Theory(DisplayName = nameof(NotNullOrEmptyThrowWhenNullOrEmpty))]
+    [Trait("Domain", "DomainValidation - Validation")]
+    [InlineData("")]
+    [InlineData("  ")]
+    [InlineData(null)]
+    public void NotNullOrEmptyThrowWhenNullOrEmpty(string? target)
+    {
+        Action action = () => DomainValidation.NotNullOrEmpty(target, "FieldName");
+
+        action.Should().Throw<EntityValidationException>().WithMessage("FieldName should not be null or empty");
+    }
+
+    [Fact(DisplayName = nameof(NotNullOrEmptyOk))]
+    [Trait("Domain", "DomainValidation - Validation")]
+    public void NotNullOrEmptyOk()
+    {
+        string target = Faker.Commerce.ProductName();
+
+        Action action = () => DomainValidation.NotNullOrEmpty(target, "FieldName");
+
+        action.Should().NotThrow();
     }
 }
