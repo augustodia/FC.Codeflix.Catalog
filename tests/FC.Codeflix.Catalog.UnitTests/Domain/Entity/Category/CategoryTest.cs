@@ -132,7 +132,7 @@ public class CategoryTest
 
         Action action = () => new DomainEntity.Category(validCategory.Name, invalidDescription);
 
-        action.Should().Throw<EntityValidationException>().WithMessage("Description should be less or equal 10.000 characters long");
+        action.Should().Throw<EntityValidationException>().WithMessage("Description should be less or equal 10000 characters long");
     }
 
     [Fact(DisplayName = nameof(Activate))]
@@ -245,6 +245,6 @@ public class CategoryTest
 
         Action action = () => category.Update(validName, invalidDescription);
 
-        action.Should().Throw<EntityValidationException>().WithMessage("Description should be less or equal 10.000 characters long");
+        action.Should().Throw<EntityValidationException>().WithMessage("Description should be less or equal 10000 characters long");
     }
 }
