@@ -83,7 +83,7 @@ public class DomainValidationTest
         for(int i  = 0; i < numberOfTests; i++)
         {
             var example = Faker.Commerce.ProductName();
-            var minLength = example.Length + (new Random()).Next(1, 20);
+            var minLength = example.Length + (new Random()).Next(1, 5);
 
             yield return new object[] { example, minLength };
         }
@@ -99,6 +99,52 @@ public class DomainValidationTest
             var minLength = example.Length - (new Random()).Next(1, 5);
 
             yield return new object[] { example, minLength };
+        }
+    }
+
+    [Theory(DisplayName = nameof(MaxLengthThrowWhenGreater))]
+    [Trait("Domain", "DomainValidation - Validation")]
+    [MemberData(nameof(GetValuesGreaterThanMax), parameters: 10)]
+    public void MaxLengthThrowWhenGreater(string target, int maxLength)
+    {
+        Action action = () => DomainValidation.MaxLength(target, maxLength, "FieldName");
+
+        action.Should().Throw<EntityValidationException>().WithMessage($"FieldName should not be greater than {maxLength} characters long");
+    }
+
+    [Theory(DisplayName = nameof(MaxLengthOk))]
+    [Trait("Domain", "DomainValidation - Validation")]
+    [MemberData(nameof(GetValuesLessThanMax), parameters: 10)]
+    public void MaxLengthOk(string target, int maxLength)
+    {
+        Action action = () => DomainValidation.MaxLength(target, maxLength, "FieldName");
+
+        action.Should().NotThrow();
+    }
+
+    public static IEnumerable<object[]> GetValuesGreaterThanMax(int numberOfTests = 5)
+    {
+        var Faker = new Faker();
+
+        for (int i = 0; i < numberOfTests; i++)
+        {
+            var example = Faker.Commerce.ProductName();
+            var maxLength = example.Length - (new Random()).Next(1, 5);
+
+            yield return new object[] { example, maxLength };
+        }
+    }
+
+    public static IEnumerable<object[]> GetValuesLessThanMax(int numberOfTests = 5)
+    {
+        var Faker = new Faker();
+
+        for (int i = 0; i < numberOfTests; i++)
+        {
+            var example = Faker.Commerce.ProductName();
+            var maxLength = example.Length + (new Random()).Next(0, 5);
+
+            yield return new object[] { example, maxLength };
         }
     }
 }
