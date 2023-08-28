@@ -42,7 +42,7 @@ public class DomainValidationTest
     {
         Action action = () => DomainValidation.NotNullOrEmpty(target, "FieldName");
 
-        action.Should().Throw<EntityValidationException>().WithMessage("FieldName should not be null or empty");
+        action.Should().Throw<EntityValidationException>().WithMessage("FieldName should not be empty or null");
     }
 
     [Fact(DisplayName = nameof(NotNullOrEmptyOk))]
@@ -63,7 +63,7 @@ public class DomainValidationTest
     {
         Action action = () => DomainValidation.MinLength(target, minLength, "FieldName");
 
-        action.Should().Throw<EntityValidationException>().WithMessage($"FieldName should not be less than {minLength} characters long");
+        action.Should().Throw<EntityValidationException>().WithMessage($"FieldName should be at leats {minLength} characters long");
     }
 
     [Theory(DisplayName = nameof(MinLengthOk))]
@@ -109,7 +109,7 @@ public class DomainValidationTest
     {
         Action action = () => DomainValidation.MaxLength(target, maxLength, "FieldName");
 
-        action.Should().Throw<EntityValidationException>().WithMessage($"FieldName should not be greater than {maxLength} characters long");
+        action.Should().Throw<EntityValidationException>().WithMessage($"FieldName should be less or equal {maxLength} characters long");
     }
 
     [Theory(DisplayName = nameof(MaxLengthOk))]
