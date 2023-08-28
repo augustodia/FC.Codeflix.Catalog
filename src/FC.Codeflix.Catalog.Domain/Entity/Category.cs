@@ -62,7 +62,7 @@ public class Category : AggregateRoot
     {
         string fieldName = nameof(Description);
 
-        if (Description == null) throw new EntityValidationException($"{fieldName} should not be empty or null");
+        if (Description == null) throw new EntityValidationException($"{fieldName} should not be null");
         if (Description.Length > 10_000) throw new EntityValidationException($"{fieldName} should be less or equal 10.000 characters long");
     }
 }
